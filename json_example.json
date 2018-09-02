@@ -1,0 +1,9 @@
+{
+    "StartBpm"
+    "name":"Phrase1",
+    "PhraseOwner":"Owner1",
+    "Notes": [
+        { "StringIndex":2, "StartBeat":4, "EndBeat":5 },
+        { "StringIndex":3, "StartBeat":5, "EndBeat":8 },
+    ]
+}
