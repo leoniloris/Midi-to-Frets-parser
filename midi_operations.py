@@ -7,7 +7,7 @@ import json
 PhraseOwner = Enum('PhraseOwner', 'Team1 Team2 Both', module=__name__)
 
 class Note():
-	def __init__(self, start_time_ticks, end_time_ticks, midi_number, ticks_per_beat=480.0):
+	def __init__(self, start_time_ticks, end_time_ticks, midi_number, ticks_per_beat=480.0, modulo=5):
 		'''
 		time_ticks: time in ticks
 		midi_number: note number
@@ -20,10 +20,14 @@ class Note():
 		self._midi_number = midi_number
 		self._start_beat = start_time_in_beats
 		self._end_beat = end_time_in_beats
+		self._modulo = modulo
+
+	def wrap_note(self):
+		return self._midi_number % self._modulo
 
 	@property
 	def dict(self):
-		return {'StringIndex': self._midi_number, 
+		return {'StringIndex': self.wrap_note(), 
 		        'StartBeat': self._start_beat,
 		        'EndBeat': self._end_beat}
 	
@@ -31,7 +35,7 @@ class Note():
 class Track():
 	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0):
 		self._name = name
-		self._owner = owner # I dont think owner makes sense here.
+		self._owner = owner # I dont think this makes.
 		self._notes = []
 		self._string_index = string_index
 
