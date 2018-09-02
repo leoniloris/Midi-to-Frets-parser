@@ -7,7 +7,7 @@ import json
 PhraseOwner = Enum('PhraseOwner', 'Team1 Team2 Both', module=__name__)
 
 class Note():
-	def __init__(self, start_time_ticks, end_time_ticks, midi_number, tempo=500000.0, ticks_per_beat=480.0):
+	def __init__(self, start_time_ticks, end_time_ticks, midi_number, ticks_per_beat=480.0):
 		'''
 		time_ticks: time in ticks
 		midi_number: note number
@@ -21,6 +21,12 @@ class Note():
 		self._start_beat = start_time_in_beats
 		self._end_beat = end_time_in_beats
 
+	@property
+	def dict(self):
+		return {'StringIndex': self._midi_number, 
+		        'StartBeat': self._start_beat,
+		        'EndBeat': self._end_beat}
+	
 
 class Track():
 	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0):
@@ -58,17 +64,13 @@ class Track():
 
 	def get_monophonic_notes_dict(self):
 		try:
-			mono_notes = [{'StringIndex': self._string_index, 
-						   'StartBeat': self._notes[0]._start_beat,
-						   'EndBeat': self._notes[0]._end_beat}]
+			mono_notes = [self._notes[0].dict]
 		except Exception:
 			return None
 
 		for note in self._notes:
 			if note._start_beat != mono_notes[-1]['StartBeat']:
-				mono_notes.append({'StringIndex': self._string_index, 
-							       'StartBeat': note._start_beat,
-							       'EndBeat': note._end_beat})
+				mono_notes.append(note.dict)
 		return mono_notes
 
 	def serialize_notes(self):
@@ -80,7 +82,6 @@ class Track():
 							'PhraseOwner': 'Owner1', 
 							'Notes': mono_notes_dict}
 			json.dump(data_to_dump, f)
-
 
 
 def load_mid(file):
