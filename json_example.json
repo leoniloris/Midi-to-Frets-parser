@@ -1,5 +1,5 @@
 {
-    "StartBpm"
+    "StartBpm": 120
     "name":"Phrase1",
     "PhraseOwner":"Owner1",
     "Notes": [
