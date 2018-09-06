@@ -82,9 +82,9 @@ class Track():
 		file_name = '%s%s.json' % (self._name, self._owner)
 		with open(file_name, 'w') as f:
 			data_to_dump = {'StartBpm': 120, 
-							'name': self._name, 
-							'PhraseOwner': 'Owner1', 
-							'Notes': mono_notes_dict}
+					'name': self._name, 
+					'PhraseOwner': 'Owner1', 
+					'Notes': mono_notes_dict}
 			json.dump(data_to_dump, f)
 
 
