@@ -35,7 +35,7 @@ class Note():
 class Track():
 	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0):
 		self._name = name
-		self._owner = owner # I dont think this makes.
+		self._owner = owner # I dont think this makes sense.
 		self._notes = []
 		self._string_index = string_index
 
