@@ -1,4 +1,5 @@
 from midi_operations import *
+from mido import tempo2bpm
 import argparse
 import json
 
@@ -19,11 +20,21 @@ def main():
 	raw_tracks = load_mid(args.midi_file)
 	raw_tracks = remove_control_msgs(raw_tracks)
 	tracks = {}
-	for owner, track in raw_tracks.items():
-		tracks[owner] = Track(name=owner)
-		tracks[owner].parse_midi_events(track, owner - 1)
+	bpm = int(tempo2bpm(raw_tracks[0][0].tempo))
 
-	music = Music(tracks, args.midi_file.split('.')[0])
+	for owner, track in raw_tracks.items():		
+		try:
+			if track[0].name == 'player1':
+				tracks[owner] = Track(name=0)
+				tracks[owner].parse_midi_events(track, 0)
+			elif track[0].name == 'player2':
+				tracks[owner] = Track(name=1)
+				tracks[owner].parse_midi_events(track, 1)
+			
+		except:
+			pass
+		
+	music = Music(tracks, args.midi_file.split('.')[0], bpm)
 	music.serialize_notes()
 
 if __name__ == "__main__":

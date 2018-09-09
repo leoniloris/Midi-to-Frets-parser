@@ -40,7 +40,6 @@ class Track():
 		self._notes = []
 		self._string_index = string_index
 		self._release_time_beats = 0.45
-		self._bpm = 120
 
 	def _dispatch_enclosure(self, notes_starts, event):
 			return notes_starts.pop(event.note, None)
@@ -63,8 +62,6 @@ class Track():
 				else:
 					print('found note without enclosure!', err)
 					return
-			elif event.type == 'set_tempo':
-				self._bpm = tempo2bpm(event.tempo)
 			try:		
 				current_time += event.time
 
@@ -83,19 +80,11 @@ class Track():
 				mono_notes.append(note.dict)
 		return mono_notes
 
-	# def serialize_notes(self, owner, initial_notes_dict):
-	# 	mono_notes_dict = self.get_monophonic_notes_dict(owner)
-	# 	file_name = '%s%s.json' % (self._name, self._owner)
-	# 	initial_notes_dict
-	# 	with open(file_name, 'w') as f:
-	# 		data_to_dump = {'StartBpm': 90, 
-	# 						'Notes': mono_notes_dict}
-	# 		json.dump(data_to_dump, f)
-
 class Music():
-	def __init__(self, tracks, name):
+	def __init__(self, tracks, name, bpm):
 		self._name = name
 		self._tracks = tracks
+		self._bpm = bpm
 
 	def serialize_notes(self):
 		file_name = '%s.json' % (self._name)
@@ -106,7 +95,7 @@ class Music():
 				if track_notes is not None:
 					mono_notes += track_notes
 
-			data_to_dump = {'StartBpm': 90, 
+			data_to_dump = {'StartBpm': self._bpm, 
 							'Notes': mono_notes}
 			json.dump(data_to_dump, f)	
 		
