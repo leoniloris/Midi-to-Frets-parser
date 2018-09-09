@@ -39,6 +39,8 @@ class Track():
 		self._owner = owner
 		self._notes = []
 		self._string_index = string_index
+		self._release_time_beats = 0.45
+		self._bpm = 120
 
 	def _dispatch_enclosure(self, notes_starts, event):
 			return notes_starts.pop(event.note, None)
@@ -50,8 +52,7 @@ class Track():
 		for event in mid_events:
 			if event.type is 'note_on':
 				notes_starts[event.note] = event.time + current_time
-
-			if event.type is 'note_off':
+			elif event.type is 'note_off':
 				note_start = self._dispatch_enclosure(notes_starts, event)
 				if note_start is not None:
 					new_note = Note(note_start, 
@@ -62,6 +63,8 @@ class Track():
 				else:
 					print('found note without enclosure!', err)
 					return
+			elif event.type == 'set_tempo':
+				self._bpm = tempo2bpm(event.tempo)
 			try:		
 				current_time += event.time
 
@@ -76,7 +79,7 @@ class Track():
 			return None
 
 		for note in self._notes:
-			if note._start_beat != mono_notes[-1]['StartBeat']:
+			if note._start_beat != mono_notes[-1]['StartBeat'] and note._start_beat - mono_notes[-1]['StartBeat'] >= self._release_time_beats:
 				mono_notes.append(note.dict)
 		return mono_notes
 
@@ -85,7 +88,7 @@ class Track():
 	# 	file_name = '%s%s.json' % (self._name, self._owner)
 	# 	initial_notes_dict
 	# 	with open(file_name, 'w') as f:
-	# 		data_to_dump = {'StartBpm': 120, 
+	# 		data_to_dump = {'StartBpm': 90, 
 	# 						'Notes': mono_notes_dict}
 	# 		json.dump(data_to_dump, f)
 
@@ -103,7 +106,7 @@ class Music():
 				if track_notes is not None:
 					mono_notes += track_notes
 
-			data_to_dump = {'StartBpm': 120, 
+			data_to_dump = {'StartBpm': 90, 
 							'Notes': mono_notes}
 			json.dump(data_to_dump, f)	
 		

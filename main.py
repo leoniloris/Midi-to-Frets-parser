@@ -20,9 +20,8 @@ def main():
 	raw_tracks = remove_control_msgs(raw_tracks)
 	tracks = {}
 	for owner, track in raw_tracks.items():
-		print(owner)
 		tracks[owner] = Track(name=owner)
-		tracks[owner].parse_midi_events(track, owner)
+		tracks[owner].parse_midi_events(track, owner - 1)
 
 	music = Music(tracks, args.midi_file.split('.')[0])
 	music.serialize_notes()
