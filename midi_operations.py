@@ -20,10 +20,13 @@ class Note():
 		self._midi_number = midi_number
 		self._start_beat = start_time_in_beats
 		self._end_beat = end_time_in_beats
-		self._modulo = modulo
+		self._n_strings = modulo
 
 	def wrap_note(self):
-		return self._midi_number % self._modulo
+		NOTES_PER_OCTAVE = 12
+		self._midi_number = self._midi_number % NOTES_PER_OCTAVE
+		self._midi_number = int(self._midi_number * (self._n_strings / NOTES_PER_OCTAVE))
+		return self._midi_number
 
 	@property
 	def dict(self):
