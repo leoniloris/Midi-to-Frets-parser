@@ -17,7 +17,7 @@ def _parse_args():
         dest='key',
         default='0',
         help='key of the music in accordance with the midi chart.')
-    
+
     args = parser.parse_args()
 
     return args
@@ -32,10 +32,10 @@ def main():
 	for owner, track in raw_tracks.items():		
 		try:
 			if track[0].name == 'player1':
-				tracks[owner] = Track(name=0)
+				tracks[owner] = Track(name=0, note_offset=key)
 				tracks[owner].parse_midi_events(track, 0)
 			elif track[0].name == 'player2':
-				tracks[owner] = Track(name=1)
+				tracks[owner] = Track(name=1, note_offset=key)
 				tracks[owner].parse_midi_events(track, 1)
 			
 		except:

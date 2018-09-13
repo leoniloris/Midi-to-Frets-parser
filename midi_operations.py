@@ -38,7 +38,7 @@ class Note():
 	
 
 class Track():
-	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0, note_offset = 0):
+	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0, note_offset=0):
 		self._name = name
 		self._owner = owner
 		self._notes = []
