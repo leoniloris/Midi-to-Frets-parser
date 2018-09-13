@@ -11,6 +11,13 @@ def _parse_args():
         dest='midi_file',
         default='test1.midi',
         help='midi file path')
+
+    parser.add_argument(
+        '--key',
+        dest='key',
+        default='0',
+        help='key of the music in accordance with the midi chart.')
+    
     args = parser.parse_args()
 
     return args

@@ -7,7 +7,7 @@ import json
 PhraseOwner = Enum('PhraseOwner', 'Team1 Team2 Both', module=__name__)
 
 class Note():
-	def __init__(self, start_time_ticks, end_time_ticks, midi_number, owner, ticks_per_beat=480.0, modulo=5):
+	def __init__(self, start_time_ticks, end_time_ticks, midi_number, owner, ticks_per_beat=480.0, modulo=5, note_offset = 0):
 		'''
 		time_ticks: time in ticks
 		midi_number: note number
@@ -21,10 +21,11 @@ class Note():
 		self._start_beat = start_time_in_beats
 		self._end_beat = end_time_in_beats
 		self._n_strings = modulo
+		self._note_offset = note_offset
 
 	def wrap_note(self):
 		NOTES_PER_OCTAVE = 12
-		self._midi_number = self._midi_number % NOTES_PER_OCTAVE
+		self._midi_number = abs((self._midi_number - self._note_offset) % NOTES_PER_OCTAVE)
 		self._midi_number = int(self._midi_number * (self._n_strings / NOTES_PER_OCTAVE))
 		return self._midi_number
 
@@ -37,12 +38,13 @@ class Note():
 	
 
 class Track():
-	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0):
+	def __init__(self, name='phrase_boss1', tempo=500000, ticks_per_beat=480, owner=None, string_index=0, note_offset = 0):
 		self._name = name
 		self._owner = owner
 		self._notes = []
 		self._string_index = string_index
 		self._release_time_beats = 0.45
+		self._note_offset = note_offset
 
 	def _dispatch_enclosure(self, notes_starts, event):
 			return notes_starts.pop(event.note, None)
@@ -60,7 +62,8 @@ class Track():
 					new_note = Note(note_start, 
 									current_time + event.time, 
 									event.note, 
-									owner)
+									owner,
+									note_offset = self._note_offset)
 					self._notes.append(new_note)
 				else:
 					print('found note without enclosure!', err)
@@ -84,7 +87,7 @@ class Track():
 		return mono_notes
 
 class Music():
-	def __init__(self, tracks, name, bpm):
+	def __init__(self, tracks, name, bpm, ):
 		self._name = name
 		self._tracks = tracks
 		self._bpm = bpm
